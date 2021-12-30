@@ -1,0 +1,193 @@
+/*
+body {
+	margin: 0 5px 0 5px;
+	box-sizing: border-box;
+	height: 100vh;
+	}
+*/
+.mem-game-container {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 2rem;
+/*
+	height: 100%;
+*/
+	}
+
+.instructions {
+	font-size: 1.5em;
+/*
+	margin-left: 1em;
+*/
+	}
+
+.boxesContainer {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	column-gap: 2vw;
+	row-gap: 2vh;
+/*
+	Leave "un-grown" so it doesn't spread out too much:
+	flex-grow: 5;
+
+	Causes weird spacing when wrapping; better to leave disabled so that
+	all boxes align vertically or horizontally, without uneven gaps
+	justify-content: space-evenly;
+*/
+	align-items: center;
+	margin-left: 1rem;
+	margin-right: 1rem;
+	/* Allow container re-size to adjust rows & columns to easier layout */
+	resize: both;
+	/* Can't find the resizing handle?!? */
+	outline: 1px solid red;
+	border-radius: 10px;
+	}
+
+.box {
+/*
+	width: clamp(15vw, 150px, 25vw);
+	height: clamp(15vw, 150px, 25vw);
+*/
+	width: 150px;
+	height: 150px;
+
+	/* cornflowerblue & darkgoldenrod are lovely colours, but too wide for the box */
+/*
+	overflow: clip;
+*/
+	box-sizing: border-box;
+	border-radius: 5px;
+	box-shadow: 5px 5px 5px inset silver, -5px -5px 5px inset slateblue;
+	cursor: pointer;
+	}
+
+.solved {
+/*
+	box-shadow: 5px 5px 5px inset silver, -5px -5px 5px inset  gray;
+*/
+	hyphens: auto;
+	}
+.solved > p + p {
+	opacity: 0;
+/*	display: none; */
+	}
+
+.box p {
+	text-align: center;
+	margin-top: 2em;
+/*
+	display: none;
+*/
+	opacity: 0;
+	/* Allow clicks on <p> inside box to activate box colour toggle (?) */
+	pointer-events: none;
+	}
+.solved p {
+	display: block;
+	padding-top: 1rem;
+
+	padding-left: .5rem;
+	padding-right: .5rem;
+
+	font-size: 1.15em;
+	opacity: 1;
+	}
+
+p.counter, p.new-game {
+	margin-bottom: 0;
+	font-size: 2rem;
+	}
+a {
+	text-decoration-line: none;
+	}
+
+
+
+
+
+
+
+
+
+/*
+------------------------------------------------------------------------------
+Responsive design
+------------------------------------------------------------------------------
+*/
+
+@media screen and (max-width: 1200px) {
+
+	.boxContainer {
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-around;
+		align-items: center;
+		box-sizing: border-box;
+		row-gap: 5px;
+		column-gap: 2px;
+		flex-grow: 50;
+/*
+		overflow: scroll;
+*/
+		outline: 1px solid blue;
+		margin: 1em;
+		padding: 0.5em;
+		columns: 2;
+/*
+		width: 90vw;
+		height: 75vh;
+*/
+		}
+	.box {
+		text-align: center;
+		font-size: .5rem;
+
+		flex-grow: 0;
+		flex-shrink: 0;
+		border-radius: 5px;
+		padding:5px;
+		margin: 0 5px 0 5px;
+
+		width: clamp(15vw, 100px, 33vw);
+		height: clamp(15vw, 100px, 33vw);
+		}
+	.box > p + p {
+		/* Show number inside unsolved boxes to aid tracking long
+			columns or rows on mobile */
+		opacity: 1;
+		font-size: 2rem;
+		font-family: hack-regular;
+		/* Center number better */
+		margin-top: -1rem;
+		}
+	.solved p {
+		font-size: 1rem;
+		font-family: hack-regular;
+		margin: 1rem 0 0 0;
+		padding: 1rem .5rem 1rem .5rem;
+		}
+	/* Hide number inside box (id) when solved (show colour name instead) */
+	.solved > p + p {
+		opacity: 0;
+		}
+
+	.instructions {
+		font-size: 1em;
+		margin: 0 1em 0 1em;
+		}
+
+/*
+	p.counter, p.new-game {
+		font-size: 1.25rem;
+		margin: .25rem 1rem .5rem 1rem;
+		flex-grow: 0;
+		}
+	p.new-game {
+		font-size: 1.5rem;
+		}
+*/
+ 	}
+

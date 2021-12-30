@@ -1,0 +1,192 @@
+
+.flag-game {
+/*
+	display: flex;
+	flex-direction: column;
+*/
+	}
+
+
+/* STUPID name, re-factor! */
+.temp2 {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	gap: 2rem;
+	margin-top: 1rem;
+	}
+
+
+.country-list-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	flex-grow: 10;
+	order: 20;
+	justify-content: space-around;
+
+	padding: .5rem;
+	align-items: center;
+	column-gap: 1rem;
+	row-gap: 1rem;
+	/* helpful when having to scroll horizontally to view whole flag: */
+/*
+	position: sticky;
+	left: .25rem;
+*/
+	}
+
+.country-list {
+	flex-grow: 1;
+	font-size: 3rem;
+	cursor: pointer;
+	border-radius: 10px;
+	background: hsl(321, 30%, 80%);
+	box-shadow: 0px 0px 10px gray;
+	}
+
+/* pre-render but hide via transparency: */
+.country-list::after {
+/*
+	box-shadow: 1px 1px 10px 10px yellow inset;
+
+	opacity: 0;
+	transition: all .5s ease-in-out;
+*/
+	}
+
+.country-list:hover, .country-list:focus {
+	transition: all .5s ease-in-out;
+	opacity: 0.75;
+
+	box-shadow: 0px 0px 10px 5px cornflowerblue
+;
+/*
+	border: 1px solid red;
+*/
+	}
+
+.country-list:hover::after {
+	box-shadow: 1px 1px 10px 10px gray inset;
+	opacity: 0;
+	transition: opacity 1.0s ease-in-out;
+/*
+	Does not work, use :hover & :focus
+	border: 2px solid red;
+*/
+	}
+.correct {
+	background: green;
+	}
+.wrong {
+	background: red;
+	}
+
+/* Nepal, for example, requires max-height */
+.flag {
+	flex-grow: 1;
+	order: 2;
+	margin: auto;
+/*
+	text-align: center;
+	padding-top: 1rem;
+*/
+	box-sizing: border-box;
+	}
+img {
+	box-shadow: -0px 0px 10px 10px gray;
+	max-height: 60vh;
+	margin-top: 0;
+	box-sizing: border-box;
+	max-width: 95vw;
+	}
+
+li {
+	list-style: none;
+	}
+.new-game {
+	order: 100;
+	font-size: 2rem;
+	text-align: center;
+	width: 100%;
+	opacity: 1;
+	transition: all 2s ease-in-out;
+	}
+.more-info {
+/*
+	display: block;
+	font-size: 1rem;
+	margin-top: 1rem;
+	border: 1px solid black;
+*/
+	}
+/* More info about: ${country-name} gets larger font: */
+.more-info:first-line {
+	font-size: 1.5rem;
+	}
+.more-info ul {
+	padding-left: 0;
+	}
+
+
+
+
+
+
+/*
+------------------------------------------------------------------------------
+Responsive design
+------------------------------------------------------------------------------
+*/
+
+@media ( max-width: 1200px) {
+	.temp2 {
+		flex-direction: column;
+		flex-wrap: nowrap;
+		}
+	.country-list-container {
+		flex-wrap: wrap;
+		text-align: center;
+		order: 3;
+		}
+	.country-list {
+		font-size: 1.5rem;
+		}
+
+	.flag {
+		}
+	img {
+		max-width: 95vw;
+		margin-top: 1rem;
+		}
+
+	.new-game, .new-game > div > a  {
+		order: 20;
+		font-size: 2rem;
+		text-align: center;
+		text-decoration: none;
+		transition: all 2s ease-in-out;
+		}	
+	.more-info, .more-info ul {
+		order: 200;
+		margin-top: 1rem;
+		padding: 1rem 0rem 1rem 0rem;
+		font-size: 1.25rem;
+		background: cornflowerblue;
+/*
+		display: block;
+		text-align: center;
+		columns: 1;
+		border: 1px solid black;
+
+		transition: all 1s ease-in-out;
+*/
+		}
+	/* Zebra striping (subtle!) on "more about" facts list */
+	.more-info ul li:nth-of-type(odd) {
+		background: hsl( 222, 50%, 90%);
+		}
+	.more-info ul li:nth-of-type(even) {
+		background: hsl( 222, 90%, 90%);
+		}
+	}
