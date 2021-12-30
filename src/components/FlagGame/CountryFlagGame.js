@@ -78,7 +78,7 @@ class CountryFlagGame extends Component {
 		e.preventDefault();
 		e.stopPropagation();
 
-		console.log( `handleNewGameClick(e) e:${e}`);
+		// console.log( `handleNewGameClick(e) e:${e}`);
 
 		this.randCountries = [];
 		this.idxAnswerCorrect = -1;
@@ -101,7 +101,7 @@ class CountryFlagGame extends Component {
 	handleCountryClick(e) {
 		e.preventDefault();
 
-		console.log(`handleCountryClick(e) e:`, e);
+		// console.log(`handleCountryClick(e) e:`, e);
 
 		console.log(`country chosen:`
 			+ ` ${this.state.countriesAll[ [e.target.id] ].name}`
@@ -285,28 +285,18 @@ class CountryFlagGame extends Component {
 
 	// ---------------------------------------------------------
 	render() {
-		console.log(`render() ...`);
-/*
-		let randCountries = this.randCountries;
-		let answerIdx = this.answerIdx;
-*/
-		// Array of 4 randomly selected countries:
-		// let randCountries = [];
+		// console.log(`render() ...`);
+
 		// Randomly selected index to 'correct' country:
 		let randCountry = 0;
 
 		// Get 4 random countries IF this.state.countriesAll is loaded:
 		// AND if a correct answer hasn't been chosen yet
-		// (WTF is it running this code twice and CountryFlag is using
-		// the first selection of countries, making impossible to
-		// click correct country?!?  WTF?!?
-//		if (this.state.countriesAll.length > 0
 		if (this.state.countriesAll.length > 0
 			&& this.randCountries.length === 0
 			&& this.idxAnswerCorrect === -1
 			&& this.state.solved === false
 			) {
-//				&& this.answerIdx.length === 0) {
 			this.randCountries =
 				this.randomArraySlice( [...this.state.countriesAll], NUM_CHOICES);
 			randCountry = Math.floor( Math.random() * this.randCountries.length);

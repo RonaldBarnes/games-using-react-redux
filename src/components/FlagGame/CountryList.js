@@ -56,13 +56,15 @@ class CountryList extends Component {
 				if ( this.props.guessesCorrect.includes(
 						this.props.countryList[idx].origidx) ) {
 					classes += ' correct';
-					onclickAction = () => (console.log("nope") );
+					onclickAction = () => (console.log("Button's been clicked already"
+						+ " (correct country chosen), doing nothing (NOOP)") );
 					} // end if this matches correct guess
 				// set class 'wrong' on wrong choices:
 				else if ( this.props.guessesWrong.includes(
 						this.props.countryList[idx].origidx) ) {
 					classes += ' wrong';
-					onclickAction = () => (console.log("nope") );
+					onclickAction = () => (console.log("Button's been clicked already"
+						+ " (wrong country choice), doing nothing (NOOP)") );
 					} // else if this matches wrong guess
 				} // end if guesses exist
 
@@ -107,7 +109,7 @@ Population: {this.props.formatNumber(this.props.countryList[this.props.idxAnswer
 			} // end if solved
 
 		return (
-			<div className='temp2'>
+			<React.Fragment>
 				<div className='country-list-container'>
 					{listItems}
 				</div>
@@ -115,7 +117,7 @@ Population: {this.props.formatNumber(this.props.countryList[this.props.idxAnswer
 					<img src={imgSrc} alt='Flag' />
 				</div>
 				{solvedDiv}
-			</div>
+			</React.Fragment>
 			)
 		} // end render
 	} // end class

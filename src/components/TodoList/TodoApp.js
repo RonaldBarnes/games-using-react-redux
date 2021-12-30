@@ -65,7 +65,7 @@ class TodoApp extends Component {
 	componentDidMount() {
 		console.log(`componentDidMount() - calling fetchList() for todo list:`);
 
-		document.title = 'TodoApp ReactJS';
+		document.title = 'TodoApp'; //  ReactJS';
 
 		this.fetchList();
 		}
@@ -264,25 +264,17 @@ class TodoApp extends Component {
 
 
 		return (
-			<div className='container'>
-{/*
-				<Header appName='Todo&nbsp;App ReactJS'/>
-*/}
-				<div className='App'>
-					<h2>Todo App</h2>
-					<TodoForm
-						inputValueText={this.state.inputValue}
-						addTodo={this.addTodo}
-						handleFormSubmit={this.handleFormSubmit}
-						handleInputChange={this.handleInputChange}
-						/>
-					<ul>
-						{todoItems}
-					</ul>
-				</div>
-{/*
-				<Footer />
-*/}
+			<div className='todo-container'>
+				<h1>Todo App</h1>
+				<TodoForm
+					inputValueText={this.state.inputValue}
+					addTodo={this.addTodo}
+					handleFormSubmit={this.handleFormSubmit}
+					handleInputChange={this.handleInputChange}
+					/>
+				<ul>
+					{todoItems}
+				</ul>
 			</div>
 			);
 		} // end render

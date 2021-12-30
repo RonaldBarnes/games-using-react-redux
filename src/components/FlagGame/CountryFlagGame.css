@@ -1,13 +1,19 @@
 
 .flag-game {
-/*
 	display: flex;
 	flex-direction: column;
-*/
+	column-gap: 2rem;
+	row-gap: 2rem;
+
+	margin-top: 1rem;
 	}
 
 
 /* STUPID name, re-factor! */
+/* Fixed quickly with React.Fragment, since temp2 was just to avoid
+	adjacent items in the return()
+*/
+/*
 .temp2 {
 	display: flex;
 	flex-direction: column;
@@ -15,7 +21,7 @@
 	gap: 2rem;
 	margin-top: 1rem;
 	}
-
+*/
 
 .country-list-container {
 	display: flex;
@@ -104,28 +110,51 @@ img {
 li {
 	list-style: none;
 	}
+
 .new-game {
 	order: 100;
-	font-size: 2rem;
+	font-size: 2.5rem;
 	text-align: center;
 	width: 100%;
 	opacity: 1;
 	transition: all 2s ease-in-out;
 	}
-.more-info {
-/*
-	display: block;
-	font-size: 1rem;
-	margin-top: 1rem;
-	border: 1px solid black;
-*/
-	}
+
+
 /* More info about: ${country-name} gets larger font: */
 .more-info:first-line {
+	font-size: 2rem;
+	}
+.more-info {
 	font-size: 1.5rem;
+	margin-top: 1rem;
+	}
+.more-info {
+	margin-top: 1rem;
+	padding: 1rem 0 3rem 0;
+	font-size: 1.5rem;
+	background: cornflowerblue;
 	}
 .more-info ul {
+	/* Even without ::marker, padding pushes off-centre: remove padding: */
 	padding-left: 0;
+	}
+/* Zebra striping (subtle!) on "more about" facts list */
+/* WHY is TodoList over-riding these, when it SEEMS (to me) to have
+	less specificity?
+
+	Here's its selector:
+	.App ul li:nth-of-type(2n+1)
+
+	ANSWER(?): Todo was imported in App.js AFTER this, so equal specificity
+	means last one over-rides first one.
+*/
+.more-info ul li:nth-of-type(odd)
+	{
+	background: hsl( 222, 50%, 90%);
+	}
+.more-info ul li:nth-of-type(even) {
+	background: hsl( 222, 90%, 90%);
 	}
 
 
@@ -140,7 +169,7 @@ Responsive design
 */
 
 @media ( max-width: 1200px) {
-	.temp2 {
+	.temp2, .flag-game {
 		flex-direction: column;
 		flex-wrap: nowrap;
 		}
@@ -167,26 +196,4 @@ Responsive design
 		text-decoration: none;
 		transition: all 2s ease-in-out;
 		}	
-	.more-info, .more-info ul {
-		order: 200;
-		margin-top: 1rem;
-		padding: 1rem 0rem 1rem 0rem;
-		font-size: 1.25rem;
-		background: cornflowerblue;
-/*
-		display: block;
-		text-align: center;
-		columns: 1;
-		border: 1px solid black;
-
-		transition: all 1s ease-in-out;
-*/
-		}
-	/* Zebra striping (subtle!) on "more about" facts list */
-	.more-info ul li:nth-of-type(odd) {
-		background: hsl( 222, 50%, 90%);
-		}
-	.more-info ul li:nth-of-type(even) {
-		background: hsl( 222, 90%, 90%);
-		}
 	}

@@ -42,7 +42,7 @@ body {
 	/* Allow container re-size to adjust rows & columns to easier layout */
 	resize: both;
 	/* Can't find the resizing handle?!? */
-	outline: 1px solid red;
+	/* outline: 1px solid red; */
 	border-radius: 10px;
 	}
 
@@ -131,8 +131,8 @@ Responsive design
 		flex-grow: 50;
 /*
 		overflow: scroll;
-*/
 		outline: 1px solid blue;
+*/
 		margin: 1em;
 		padding: 0.5em;
 		columns: 2;
