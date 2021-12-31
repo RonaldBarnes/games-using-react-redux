@@ -106,6 +106,8 @@ const About = () => (
 		<p>
 			The final step was merging everything into one app with Routes, v6,
 			since the Routes lessons were brief and missing an assigned exercise.
+			Also implemented NavLink in header, highlighting the "Home" at top of
+			page...
 			<br />
 		</p>
 		<p>
@@ -114,7 +116,7 @@ const About = () => (
 		<ul className='about'><li>
 			Utililize Redux to centralize state further, allowing one to switch
 			games midway through, return to it and continue the game.
-		</li><li>
+		</li><li style={{textDecorationLine: 'line-through'}}>
 			Merge TodoList app into current framework
 		</li><li>
 			Perhaps re-factor, probably not - ought to complete the remaining
