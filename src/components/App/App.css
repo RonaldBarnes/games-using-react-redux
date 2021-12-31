@@ -5,17 +5,15 @@
 	flex-direction: column;
   text-align: center;
 	/* Leave room for "sticky" header & footer: */
-	margin-top: 50px;
-	margin-bottom: 50px;
+	margin-top: calc(16px*2 + 39px);
+	margin-bottom: calc(16px*2 + 24px);
 	/*
 		Set a minimum height of screen height minus ~(header+footer).
 		Allows About (i.e.) to fill screen without scroll bars.
 	*/
-	min-height: calc(100vh - 100px);
+	min-height: calc(100vh - (16px*2 + 39px) - (16px*2 + 24px) );
 	width: 100%;
 	}
-
-
 
 h1, h2 {
 	text-align: center;

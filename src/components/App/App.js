@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {BrowserRouter, Link, Routes, Route} from 'react-router-dom';
+import {BrowserRouter, NavLink as Link, Routes, Route} from 'react-router-dom';
 // import {Switch} from 'react-dom';
 /*
 import {BrowserRouter} from 'react-router-dom';
@@ -24,9 +24,18 @@ class App extends Component {
 
 	// console.log(`window.location.hostname: ${window.location.hostname}`);
 
-		const linkMemGame = <Link to="/memory-game">Memory Game</Link>
-		const linkFlagGame = <Link to="/flag-game">Flag Game</Link>
-		const linkHome = <Link to="/">Home</Link>
+		const linkMemGame =
+			<Link
+				to="/memory-game"
+				activeClassName="active">Memory Game</Link>
+		const linkFlagGame =
+				<Link
+					to="/flag-game"
+					activeClassName="active">Flag Game</Link>
+		const linkHome =
+				<Link
+					to="/"
+					activeClassName="active">Home</Link>
 		const linkTodoApp = <Link to="/todo-list">Todo List</Link>
 		const linkTodoAPI = <Link to={window.location.hostname + `:8123/api/todos`}>Todo List API</Link>
 
