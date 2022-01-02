@@ -29,7 +29,21 @@ class CountryList extends Component {
 
 	// ---------------------------------------------------------
 	render() {
-		// let {countryList, idxAnswerSubset, solved} = this.props;
+		let {
+			countryList,
+			guessesCorrect,
+			guessesWrong,
+			idxAnswerSubset,
+			solved
+			} = this.props;
+
+		// Do nothing if already solved but user clicks more countries:
+		/*
+		if ( this.props.solved ) {
+			return '';
+			}
+		*/
+
 
 		// Flatten guesses arrays into one for easy testing of prior guesses:
 		// let guesses = this.props.guessesCorrect.concat( this.props.guessesWrong);
@@ -39,34 +53,47 @@ class CountryList extends Component {
 			this.props.guessesCorrect,
 			this.props.guessesWrong
 			);
+		let guessCount = guessesCorrect.length + guessesWrong.length;
+
+
 		let classes = 'country-list';
 
 		// The NUM_CHOICES (4) options for user / player to choose from:
 		let listItems = '';
 
 		// Prevent clicking an already-chosen option:
+		// Huh? How would ^this^ work? This handles normal clicks, right?
+		// Remap onclickAction once solved instead!
 		let onclickAction = this.props.handleCountryClick;
 
-		listItems = this.props.countryList.map( (value,idx) => {
+
+		listItems = countryList.map( (value,idx) => {
 			classes = 'country-list';
 			onclickAction = this.props.handleCountryClick;
 
-			// set class 'correct' on correct country if it's been chosen:
-			if (guesses.length > 0) {
-				if ( this.props.guessesCorrect.includes(
-						this.props.countryList[idx].origidx) ) {
+			// Only look for class changes on buttons if guesses have happened:
+			// This is useless, redundant, only skips upon initial load...
+			// Refactor by removing this logic branch completely:
+//			if (guessCount > 0) {
+				// Update country button's colour if correct button selected
+				// set class 'correct' on correct country if it's been chosen:
+				if ( guessesCorrect.includes(
+						countryList[idx].origidx) ) {
 					classes += ' correct';
-					onclickAction = () => (console.log("Button's been clicked already"
-						+ " (correct country chosen), doing nothing (NOOP)") );
 					} // end if this matches correct guess
 				// set class 'wrong' on wrong choices:
-				else if ( this.props.guessesWrong.includes(
-						this.props.countryList[idx].origidx) ) {
+				else if ( guessesWrong.includes( countryList[idx].origidx) ) {
 					classes += ' wrong';
-					onclickAction = () => (console.log("Button's been clicked already"
-						+ " (wrong country choice), doing nothing (NOOP)") );
 					} // else if this matches wrong guess
-				} // end if guesses exist
+//				} // end if guesses exist
+
+
+			// Once solved, stop accepting new country guesses:
+			if (this.props.solved) {
+				onclickAction = () => (
+					console.log('STOP GUESSING, the correct answer is '
+						+ `"${countryList[idxAnswerSubset].name}".`));
+				}
 
 			return <div className={classes}
 				key={value.origidx}
@@ -76,7 +103,7 @@ class CountryList extends Component {
 				>{value.name}
 			</div>
 			}); // end map
-		let imgSrc = this.props.countryList[this.props.idxAnswerSubset].flag ;
+		let imgSrc = countryList[idxAnswerSubset].flag ;
 
 
 		// If puzzle solved, add link to new game:
@@ -91,18 +118,25 @@ class CountryList extends Component {
 						>Next Puzzle</a>
 					</div>
 				<div className='more-info'>
-More info about {this.props.countryList[this.props.idxAnswerSubset].name}
+More info about {countryList[idxAnswerSubset].name}
 					<ul><li>
-Region: {this.props.countryList[this.props.idxAnswerSubset].region}
+Region: {countryList[idxAnswerSubset].region}
 						</li><li>
-Sub-Region: {this.props.countryList[this.props.idxAnswerSubset].subregion}
+Sub-Region: {countryList[idxAnswerSubset].subregion}
 						</li><li>
-Capital city: {this.props.countryList[this.props.idxAnswerSubset].capital}
+Capital city: {countryList[idxAnswerSubset].capital}
 						</li><li>
-Native name: {this.props.countryList[this.props.idxAnswerSubset].nativeName}
+Native name: {countryList[idxAnswerSubset].nativeName}
 						</li><li>
-Population: {this.props.formatNumber(this.props.countryList[this.props.idxAnswerSubset].population)}
-						</li>
+Population: {this.props.formatNumber(countryList[idxAnswerSubset].population)}
+						</li><li>
+<span style={{fontWeight: 'bold'}}>Language
+{countryList[idxAnswerSubset].languages.length > 1 ? 's' : ''}
+:</span> <ol style={{width: 'fit-content', marginInline: 'auto'}}>{countryList[
+	idxAnswerSubset].languages.map( (lang,idx) => (
+	<li key={idx} style={{listStyle: 'decimal'}}>{lang.name} ({lang.nativeName})</li>
+	))}</ol>
+ 						</li>
 					</ul>
 				</div>
 			</div>
