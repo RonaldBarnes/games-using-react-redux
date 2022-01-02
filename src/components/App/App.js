@@ -13,7 +13,16 @@ import TodoApp from '../TodoList/TodoApp';
 
 import logo from '../../logo.svg';
 
+/*
+	Stopped using the Header.js and embedded a few links inside the 
+	BrowserRouter inside this file.
+	May decide to change it back to a discrete file again.
+	Had to import the Header.css file now, since it was the only functionality
+	provided by Header.js post-refactoring.
+
 import Header from '../../Header';
+*/
+import '../../Header.css';
 import Footer from '../../Footer';
 
 import './App.css';
@@ -27,15 +36,15 @@ class App extends Component {
 		const linkMemGame =
 			<Link
 				to="/memory-game"
-				activeClassName="active">Memory Game</Link>
+				activeclassname="active">Memory Game</Link>
 		const linkFlagGame =
 				<Link
 					to="/flag-game"
-					activeClassName="active">Flag Game</Link>
+					activeclassname="active">Flag Game</Link>
 		const linkHome =
 				<Link
 					to="/"
-					activeClassName="active">Home</Link>
+					activeclassname="active">Home</Link>
 		const linkTodoApp = <Link to="/todo-list">Todo List</Link>
 		const linkTodoAPI = <Link to={window.location.hostname + `:8123/api/todos`}>Todo List API</Link>
 
@@ -86,12 +95,6 @@ const About = () => (
 		<h1>ReactJS Projects</h1>
     {/* <h2>Welcome to React</h2> */}
 		<img
-/*
-			style={{
-				boxShadow: 'none',
-				textAlign: 'center'
-				}}
-*/
 			src={logo} className="App-logo"
 			alt="ReactJS logo" />
 		<h2>
@@ -104,10 +107,12 @@ const About = () => (
 			all apps), centralized state, and much more.
 		</p>
 		<p>
-			The final step was merging everything into one app with Routes, v6,
+			The final step was merging everything into one app with {' '}
+			<span className='code'>Routes</span> & {' '}
+			<span className='code'>Link</span>s (v6),
 			since the Routes lessons were brief and missing an assigned exercise.
-			Also implemented NavLink in header, highlighting the "Home" at top of
-			page...
+			Also implemented <span className='code'>NavLink</span>{' '}
+			in header, highlighting the "Home" at top of this page...
 			<br />
 		</p>
 		<p>
