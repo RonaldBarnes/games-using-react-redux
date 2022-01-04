@@ -1,4 +1,20 @@
 
+/*
+	Sometimes the country list wraps upon (correct-only?) guess.
+	Country: Paraguay
+	Choices:	Paraguay (174),
+						Congo (Democratic Republic of the) (54),
+						Morocco (151),
+						Tuvalu (234)
+	Window width: 1428px
+	Window height: 1297.4px
+
+	What caused a guess (1st guess) of Paraguay (correct) to make
+	Tuvalu wrap to second line?!?
+
+	The only style change is ".correct" which changes colour to "green".
+*/
+
 .flag-game {
 	display: flex;
 	flex-direction: column;
