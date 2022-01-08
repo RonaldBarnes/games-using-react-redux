@@ -139,16 +139,19 @@ li {
 
 
 /* More info about: ${country-name} gets larger font: */
-.more-info:first-line {
-	font-size: 2rem;
+/* So, problem when country name is:
+United Kingdom of Great Britain and Northern IrelandUnited Kingdom of Great Britain and Northern Ireland
+	That's ~105 characters, then "More info about " gets pre-pended, and it
+	wraps, so "Ireland" doesn't get enhanced font size.
+	Oops & huh.
+*/
+.more-info::first-line {
+	font-size: 2.0rem;
 	}
-.more-info {
-	font-size: 1.5rem;
-	margin-top: 1rem;
-	}
+
 .more-info {
 	margin-top: 1rem;
-	padding: 1rem 0 3rem 0;
+	padding: 1rem .25rem 3rem .25rem;
 	font-size: 1.5rem;
 	background: cornflowerblue;
 	}

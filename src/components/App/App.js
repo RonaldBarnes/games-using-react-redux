@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 
 import {BrowserRouter, NavLink as Link, Routes, Route} from 'react-router-dom';
-// import {Switch} from 'react-dom';
 /*
 import {BrowserRouter} from 'react-router-dom';
 import {Route} from 'react-router-dom';
+// Switch is deprecated in v6?
+// import {Switch} from 'react-dom';
 */
+
+import globalStore from '../../rootReducer';
+// import { flagStore } from '../../rootReducer';
+import { Provider } from 'react-redux';
+
 
 import MemoryGame from '../MemoryGame/MemoryGame';
 import CountryFlagGame from '../FlagGame/CountryFlagGame';
@@ -14,7 +20,7 @@ import TodoApp from '../TodoList/TodoApp';
 import logo from '../../logo.svg';
 
 /*
-	Stopped using the Header.js and embedded a few links inside the 
+	Stopped using the Header.js and embedded a few links inside the
 	BrowserRouter inside this file.
 	May decide to change it back to a discrete file again.
 	Had to import the Header.css file now, since it was the only functionality
@@ -39,7 +45,7 @@ class App extends Component {
 				activeclassname="active">Memory Game</Link>
 		const linkFlagGame =
 				<Link
-					to="/flag-game"
+					to="/flag-game" xxx='xxx'
 					activeclassname="active">Flag Game</Link>
 		const linkHome =
 				<Link
@@ -71,7 +77,9 @@ class App extends Component {
 */}
 							<Route path='/' element={<About />} />
 							<Route path='/memory-game' element={<MemoryGame	/>} />
-							<Route path='/flag-game' element={<CountryFlagGame />} />
+							<Route
+								path='/flag-game'
+								element={<CountryFlagGame store={globalStore} />} />
 							<Route path='/todo-list' element={<TodoApp />} />
 {/*
 											linkTodoList={linkTodoList}
@@ -84,7 +92,7 @@ class App extends Component {
 					</BrowserRouter>
 				<Footer />
       </div>
-    );
+    ); // end return
   }
 }
 
