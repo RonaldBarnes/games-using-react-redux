@@ -17,7 +17,7 @@ class CountryList extends Component {
 		guessesWrong: PropTypes.array.isRequired,
 		handleCountryClick: PropTypes.func.isRequired,
 		handleNewGameClick: PropTypes.func.isRequired,
-		formatNumber: PropTypes.func.isRequired
+		formatNumber: PropTypes.object.isRequired
 		}
 
 

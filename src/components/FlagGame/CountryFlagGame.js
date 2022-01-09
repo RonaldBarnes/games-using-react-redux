@@ -114,6 +114,7 @@ class CountryFlagGame extends Component {
 		// async fetchCountriesAllData
 		if (this.props.countriesAll.length > 0 &&
 				this.props.randCountries.length === 0) {
+console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
 			this.selectRandCountries();
 			}
 	} // end componentDidMount
@@ -153,6 +154,7 @@ class CountryFlagGame extends Component {
 			.then( () => {
 				// Do not like this here, should be in componentDidMount, but...
 				// problems with timing issues.  async to the rescue?
+				// This is required here, otherwise stuck on loading screen
 				this.selectRandCountries();
 				})
 			.catch( error => {
@@ -179,25 +181,15 @@ class CountryFlagGame extends Component {
 		// Select a random "correct" country from the 4 countries
 		randCountry =
 			Math.floor( Math.random() * randCountries.length);
-//				Math.floor( Math.random() * this.randCountries.length);
 
-		// Set an index of correct country to master countries list
-//			this.idxAnswerCorrect = this.randCountries[randCountry].idxMasterList ;
-/*
-		let idxAnswerCorrect =
-			randCountries[randCountry].idxMasterList ;
-*/
 		// Save index of correct country inside subset that user chooses from:
 		this.idxAnswerSubset = randCountry;
 
 
 
 
-console.log("NEXT: SET RAND COUNTRIES");
 		await this.props.setRandCountries( [...randCountries]);
-console.log("SET RAND COUNTRIES");
 
-console.log("NEXT SETTING INDECES");
 		await this.props.setAnswerIndeces({
 			indexMasterList: randCountries[randCountry].idxMasterList,
 			indexSubset: randCountry
@@ -214,7 +206,7 @@ console.log("NEXT SETTING INDECES");
 	// Expecting arr=countriesAll and num=NUM_CHOICES=4.
 	// --------------------------------------------------------------------------
 	randomArraySlice( arr, numWanted) {
-		console.log(`randomArraySlice( arr, ${numWanted})`);
+		// console.log(`randomArraySlice( arr, ${numWanted})`);
 
 		let retArr = [];
 		// Set (forces unique elements) of 4 random indices to countriesAll:
@@ -367,7 +359,18 @@ const mapStateToProps = (reduxState, props) => {
 
 // ----------------------------------------------------------------------------
 const mapDispatchToProps = (dispatch, props) => {
+
+	// This console.log causes error in console of Chromium, not Firefox!
+	//
+	// CountryFlagGame mapDispatchToProps() ƒ dispatch(action) {
+	//	if (!isPlainObject(action)) {
+	//
+	//	throw new Error( false ? 0 : "Actions must be plain objects.
+	//	Instead, the actual type was: '" + kindOf(action) + "'. You may need
+	//	to add mid… (middleware...)
+	//
 	console.log("CountryFlagGame mapDispatchToProps()", dispatch, props);
+
 	return ({
 		setCountriesAll: (list) => (dispatch(
 				{
