@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
 
@@ -18,23 +19,22 @@ const TIMER = 2000;
 
 
 
-// ******************************************************************
+// ----------------------------------------------------------------------------
 // Sub component
-// ******************************************************************
+// ----------------------------------------------------------------------------
 
 class ColouredBoxes extends Component {
 
+	// Conflicts with similar declaration in MemoryGame class below?
 	static propTypes = {
 		boxArray: PropTypes.array.isRequired,
 		boxHiddenState: PropTypes.array.isRequired,
 		handleBoxClick: PropTypes.func.isRequired
 		};
 
-//	const { boxArray, boxHiddenState } = this.props;
-//	console.log( `ColouredBoxes() boxArray: ${boxArray} this.props: `, this.props);
-//	console.log( `ColouredBoxes() this.props: `, this.props);
 
 
+	// --------------------------------------------------------------------------
 	render() {
 		const { boxArray, boxHiddenState } = this.props;
 
@@ -58,7 +58,6 @@ class ColouredBoxes extends Component {
 					className={boxClass}
 					style={boxStyle}
 					onClick={ (e) => this.props.handleBoxClick(e) }
-//					handleBoxClick={ (e) => this.handleBoxClick(e) }
 					>
 					<p>{colour}</p>
 					<p>{idx+1}</p>
@@ -77,65 +76,38 @@ class ColouredBoxes extends Component {
 
 
 
-// ******************************************************************
+// ----------------------------------------------------------------------------
 // Main component
-// ******************************************************************
+// ----------------------------------------------------------------------------
 
 class MemoryGame extends Component {
+
+	static propTypes = {
+		colorChoices: PropTypes.array.isRequired,
+		boxHiddenState: PropTypes.array.isRequired,
+		boxSolvedState: PropTypes.array.isRequired,
+
+		boxShowingCount: PropTypes.number.isRequired,
+		clickCounter: PropTypes.number.isRequired,
+		allowClick: PropTypes.bool.isRequired,
+		}
+
+
+
+	// --------------------------------------------------------------------------
 	constructor( props ) {
 		super( props );
 
-		// 8 choices, doubled makes 16 boxes:
-		this.colorChoices = ['aqua', 'orange', 'chartreuse', 'crimson',
-			'seagreen', 'indigo', 'darkgoldenrod', 'cornflowerblue'];
+		console.log(`MemoryGame constructor() props:`, props);
 
-		// Make temp object with 2 sets of the colours, which we remove
-		// elements from when selected to populate 'boxes' array:
-		this.colorChoicesTemp = [...this.colorChoices, ...this.colorChoices];
-		// An iterable array, contents don't matter, just element for each
-		// final box:
-		this.boxesTemp = [...this.colorChoices, ...this.colorChoices];
+		// Only re-initialize if game is not underway (like if returning from
+		// FlagGame, then don't reset on-going game):
+		if (this.props.clickCounter === 0) {
+			this.initializeBoxes();
+			}
 
-
-		// Array of boxes displayed on screen:
-		this.boxes = Array(NUM_BOXES);
-
-		// Array to hold state of each box:
-		// Hidden, Showing, Solved (and therefore showing):
-		this.boxHiddenState = Array( this.boxes.length);
-
-
-		// Basically get random index of an array:
-//		function getRandomColour( arr ) {
-		this.getRandomColour = ( arr ) => (
-			Math.floor(Math.random() * arr.length)
-			);
-
-		// Assign random colours to boxes array by assigning from random index,
-		// then removing that element from colorChoicesTemp.
-		// This ensures all colours are used and never more than twice.
-		this.boxes = this.boxesTemp.map( (box, idx) => {
-			let tempColorIdx = this.getRandomColour( this.colorChoicesTemp );
-			box = this.colorChoicesTemp[ tempColorIdx ];
-			this.colorChoicesTemp.splice( tempColorIdx, 1 );
-			// initialize boxHiddenState to hidden:
-			this.boxHiddenState[idx] = 'Hidden';
-			return box;
-			});
-
-		this.state = {
-			// Shouldn't need colorChoices, they've been assigned already
-			colorChoices: this.colorChoices,
-			boxes: this.boxes,
-			boxHiddenState: this.boxHiddenState,
-			// Push indices of solved boxes into this array:
-			boxSolvedState: [],
-			// Can only show 2 unsolved boxes at once, count them here:
-			boxShowingCount: 0,
-			clickCounter: 0,
-			allowClick: true
-			};
-
+		// set ID on setTimeout() so it can be cancelled:
+		this.timeOutId;
 
 		this.handleBoxClick = this.handleBoxClick.bind(this);
 		this.resetShowingBoxes = this.resetShowingBoxes.bind( this);
@@ -145,10 +117,54 @@ class MemoryGame extends Component {
 
 
 
+	// --------------------------------------------------------------------------
+	// Assign colours randomly to an array of boxes:
+	// --------------------------------------------------------------------------
+	initializeBoxes() {
+		// console.log( "MemoryGame initializeBoxes()" );
+
+
+		// Make temp object with 2 sets of the colours, which we remove
+		// elements from when selected to populate 'boxes' array:
+		const colorChoicesTemp = [
+			...this.props.colorChoices,
+			...this.props.colorChoices
+			];
+
+		// initialize boxHiddenState to hidden:
+		const boxHiddenState = Array(NUM_BOXES).fill("Hidden");
+
+		// Assign colours to boxes array by randomly choosing an index
+		// from temp array of all colours*2,
+		// then removing that index's element from temp array so it's not reused.
+		// This ensures all colours are used and never more than twice.
+		const boxes = Array(NUM_BOXES).fill("").map( (box, idx) => {
+			// Get a random colour (random index to array of coloured boxes):
+			let tempColorIdx = this.getRandomColour( colorChoicesTemp );
+			// Assign that colour to an array element:
+			box = colorChoicesTemp[ tempColorIdx ];
+			// Remove that index from temp colour array so it's not re-used:
+			colorChoicesTemp.splice( tempColorIdx, 1 );
+			return box;
+			});
+
+
+		this.props.setBoxesAll( [...boxes] );
+		this.props.setBoxHiddenState( [...boxHiddenState] );
+		return [...boxes];
+		}
 
 
 
-	// ******************************************************************
+	// --------------------------------------------------------------------------
+	// Basically get random index of an array:
+	// --------------------------------------------------------------------------
+	getRandomColour = ( arr ) => {
+		return Math.floor(Math.random() * arr.length);
+		}
+
+
+	// --------------------------------------------------------------------------
 	componentDidMount() {
 		document.title = 'Memory Game';
 		} // end componentDidMount
@@ -157,48 +173,43 @@ class MemoryGame extends Component {
 
 
 
-	// ******************************************************************
+	// --------------------------------------------------------------------------
 	// Determine if two "Showing" boxes match colours, if so, set to "Solved":
-	// ******************************************************************
-	flagSolved( boxShowingCount, arr ){
-//		console.log(`flagSolved() boxShowingCount: ${boxShowingCount}  arr: ${[...arr]}`);
+	// --------------------------------------------------------------------------
+	flagSolved( boxShowingCount, arr ) {
 
-//		if ( this.state.boxShowingCount === 2) {
-//		if ( boxShowingCount === 2) {
-			const boxesTemp = [];
+		// console.log(`flagSolved() boxShowingCount: ${boxShowingCount}`
+		//	+ ` and arr:`, arr);
 
-			// Filter for the two "Showing" boxes:
-//			this.state.boxHiddenState.map( (hiddenState, idx) => {
-			arr.map( (hiddenState, idx) => {
-				if (hiddenState === 'Showing' ) {
-					boxesTemp.push(idx);
-// console.log(`flagSolved() Showing colour: ${this.state.boxes[boxesTemp[boxesTemp.length-1]]}`);
-					} // end if === 'Showing'
-				return hiddenState;
-				}) // end map
-			// Two boxes showing, their indeces saved in boxesTemp:
-			// Compare those index's values in boxes array on screen:
-// console.log(`flagSolved() colours: ${this.state.boxes[boxesTemp[0]]} vs `
-//	+ `${this.state.boxes[boxesTemp[1]]}  ... solved?`);
-			if ( this.state.boxes[boxesTemp[0]] ===
-				this.state.boxes[boxesTemp[1]] ) {
-				console.log( `SOLVED: ${this.state.boxes[boxesTemp[1]]}`);
+		if ( this.props.boxShowingCount > 2) {
+			console.log(`ERROR! MemoryGame.js flagSolved(): boxShowingCount`
+				+ ` === ${boxShowingCount} but should NEVER be >2`);
+			}
 
-				const boxesSolved = [...this.state.boxHiddenState];
+		// Store 2 boxShowing colours in temp array:
+		const boxesTemp = [];
+
+		// Get indeces of the 2 "Showing" boxes:
+		boxesTemp[0] = arr.indexOf("Showing");
+		boxesTemp[1] = arr.lastIndexOf("Showing");
+
+
+
+		// With two boxes showing, their indeces saved in boxesTemp,
+		// compare those indeces's colours in boxes array:
+			if ( this.props.boxes[boxesTemp[0]] ===
+				this.props.boxes[boxesTemp[1]] ) {
+
+				console.log( `SOLVED colour: ${this.props.boxes[boxesTemp[0]]}`);
+
+				const boxesSolved = [...this.props.boxHiddenState];
 				boxesSolved[ boxesTemp[0]] = 'Solved';
 				boxesSolved[ boxesTemp[1]] = 'Solved';
-/*
-				this.setState( {boxHiddenState: [...boxesSolved],
-					boxShowingCount: 0
-					}); // end setState
-*/
-				this.setState( () => ({
-					boxHiddenState: [...boxesSolved],
-					boxShowingCount: 0
-					}), () => { console.log( `setState 1 (flagSolved): `
-						+ `showingCount: ${this.state.boxShowingCount} `
-						+ `${this.state.boxes[boxesTemp[1]]}`)}
-					); // end setState
+
+
+				this.props.setBoxHiddenState( [...boxesSolved] );
+				this.props.setBoxShowingCount(0);
+
 				return true;
 				} // end if boxesSolved match
 //			} // end if === 2
@@ -209,156 +220,117 @@ class MemoryGame extends Component {
 
 
 
-	// ----------------------------------------------------------------
+	// --------------------------------------------------------------------------
 	// Start new game without reloading page
-	// ----------------------------------------------------------------
+	// --------------------------------------------------------------------------
 	handleNewGameClick( e ) {
 		e.preventDefault();
 		e.stopPropagation();
 
 		console.log( `handleNewGameClick()`);
 
-
-		this.colorChoicesTemp = [...this.state.colorChoices,
-			...this.state.colorChoices];
-		// Assign random colours to boxes array by assigning from random index,
-		// then removing that element from colorChoicesTemp.
-		// This ensures all colours are used and never more than twice.
-		this.boxes = this.boxesTemp.map( (box, idx) => {
-			let tempColorIdx = this.getRandomColour( this.colorChoicesTemp );
-			box = this.colorChoicesTemp[ tempColorIdx ];
-			this.colorChoicesTemp.splice( tempColorIdx, 1 );
-			// initialize boxHiddenState to hidden:
-			this.boxHiddenState[idx] = 'Hidden';
-			return box;
-			});
-
-
-		this.setState( {
-			// Shouldn't need colorChoices, they've been assigned already
-			colorChoices: this.colorChoices,
-			boxes: this.boxes,
-			boxHiddenState: this.boxHiddenState,
-			// Push indices of solved boxes into this array:
-			boxSolvedState: [],
-			// Can only show 2 unsolved boxes at once, count them here:
-			boxShowingCount: 0,
-			clickCounter: 0,
-			allowClick: true
-			});
+		this.props.newMemGame();
+		this.initializeBoxes();
 		}
 
 
 
 
 
-// ******************************************************************
-// Show hidden colour of box MAX 2 at once for _?_ seconds:
-// ******************************************************************
+	// --------------------------------------------------------------------------
+	// Show hidden colour of box MAX 2 at once for _?_ seconds:
+	// --------------------------------------------------------------------------
 	handleBoxClick( e ) {
-//		e.preventDefault();
-//		e.stopPropagation();
+		// Not neccessary, not a form submission:
+		// e.preventDefault();
+		// e.stopPropagation();
 
 		// Make working copy of state
-		let {boxShowingCount,
-				boxHiddenState,
-				clickCounter,
-				allowClick } = this.state;
+		let {
+			boxShowingCount,
+			setBoxShowingCount,
+			boxHiddenState,
+			setBoxHiddenState,
+			clickCounter,
+			setClickCount,
+			allowClick,
+			} = this.props;
 
-		// console.log( `handleBoxClick(e): e.target.id=${e.target.id} `
-		//	+ ` and boxShowingCount: ${this.state.boxShowingCount}`);
 
-
-
-		// Occasionally setTimeout seems to not fire, and can have 3
-		// items showing, or have seen one showing but count of 2. WTF?
-		// This should clean those up by firing off a new setTimeout:
-		if ( boxShowingCount > 1 || !allowClick  ) {
-			// Don't show more boxes if 2 are already shown
-			// Also, it's handy, but don't hide boxes if bored user clicks
-			// while 2 are Showing to progress faster: timing issues...
+		// If player clicks another box while waiting for 2 boxes "Showing",
+		// ignore the click:
+		// Don't show more boxes if 2 are already shown
+		if ( !allowClick ) {
+			console.log(`handleBoxClick() Ignoring click while 2 boxes showing.`);
+			//
+			// Although it's handy, don't hide boxes if bored user clicks
+			// while 2 are "Showing": causes timing issues where a box shows then
+			// quickly disappears again...
+			// clearTimout(timeOutId);
 			// this.resetShowingBoxes( 0 );
 			return;
 			}
 
-		// Increment click counter
-//		clickCounter++;
 
-		// If clicked box was Hidden, toggle to Showing
-//		if (this.state.boxHiddenState[ e.target.id] === 'Hidden' ){
-		if (boxHiddenState[ e.target.id] === 'Hidden' ){
+		// If clicked box was Hidden, toggle to Showing; if NOT Hidden,
+		// ignore the click
+		if (boxHiddenState[ e.target.id] === 'Hidden' ) {
 			// Toggle state from Hidden to Showing upon Click event:
-//			tempBoxState[ e.target.id ] = 'Showing';
 			boxHiddenState[ e.target.id ] = 'Showing';
-
-			// Make working copy of state
-			// const tempBoxShowingCount = this.state.boxShowingCount;
+			setBoxHiddenState( [...boxHiddenState] );
 
 			boxShowingCount++;
-
+			setBoxShowingCount( boxShowingCount );
 
 			// Increment click counter ONLY if a box toggled to 'Showing':
 			clickCounter++;
+			setClickCount();
 
-			this.setState( () => ( {
-				boxHiddenState,
-				// boxShowingCount: state.boxShowingCount + 1
-				boxShowingCount,
-				clickCounter
-				}), () => {
-					console.log(`setState 2: this.state.boxCountShowing: `
-						+ `${this.state.boxShowingCount}`);
-					}
-				 ); // end setState
-
-
-			// Set a timer to hide both showing boxes after 2(?) seconds IF
+			// Set a timer to hide both showing boxes after TIMER (2?) seconds IF
 			// two boxes are 'Showing' BUT not 'Solved':
-//			if ( this.state.boxShowingCount > 1 ) {
-			if ( boxShowingCount > 1 ) {
-//				if (this.flagSolved( [...this.state.boxHiddenState] )) {
-				if (this.flagSolved( boxShowingCount, [...boxHiddenState] )) {
+			if ( boxShowingCount === 2) {
+				if (this.flagSolved( boxShowingCount, [...boxHiddenState]) ) {
 					// console.log( `MATCHED: DO NOT RESET`);
 					} // end flagSolved === true?
 				else {
 					// Disable clicks until Showing colours reset:
-					this.setState( (prevState) => { return {allowClick: false} },
-						() => { console.log( `??? ${this.state.allowClick}`) }
-						);
+					this.props.toggleClick(false);
 					this.resetShowingBoxes( TIMER );
 					} // end else
-				} // end inner if ... === 2
-			} // end outer if ... === 'Hidden'
+				} // end if boxShowingCount === 2
+			} // end if clicked boxHiddenState === 'Hidden'
 		} // end handleBoxClick
 
 
 
 
-	// ******************************************************************
+
+
+	// --------------------------------------------------------------------------
 	// Clear 'Showing' boxes by resetting them to 'Hidden':
-	// ******************************************************************
-	resetShowingBoxes(time, ...tmpHiddenState ) {
-		setTimeout( () => {
-//console.log(`resetShowingBoxes(): tmpHiddenState: ${[...tmpHiddenState]}`);
-			tmpHiddenState = this.state.boxHiddenState.map( (state, idx) => (
-//			tmpHiddenState = tmpHiddenState.map( (state, idx) => (
+	// --------------------------------------------------------------------------
+	resetShowingBoxes(timeOut) {
+		// console.log(`resetShowingBoxes() timeOut=${timeOut}`);
+
+		this.timeOutId = setTimeout( () => {
+			console.log(`resetShowingBoxes() setTimeout() timeOutId=${this.timeOutId}`);
+
+			const tmpHiddenState = this.props.boxHiddenState.map( (state, idx) => (
 				state === 'Showing' ? 'Hidden' : state
 				)) // end map
 
-			this.setState( (prevState) => ({
-				boxHiddenState: [...tmpHiddenState],
-				boxShowingCount: 0,
-				allowClick: true
-//				clickCounter: prevState.clickCounter + 1
-				}), () => {
-					console.log( `resetShowingBoxes() setState 3: `
-						+ `boxShowingCount: ${this.state.boxShowingCount} `
-						+ `allowClick: ${this.state.allowClick}`)
-				}	) // end setState
-			}, time ) // end setTimeout
+			this.props.setBoxShowingCount(0);
+			// Already ran map on array, don't do it again:
+			// this.props.resetShowingBoxes();
+			// INSTEAD, re-use the mapped array as param:
+			this.props.setBoxHiddenState( [...tmpHiddenState] );
+			this.props.toggleClick(true);
+			}, timeOut ) // end setTimeout
+		// console.log(`setTimeout() timeOutId=${this.timeOutId}`);
 		} // end resetShowingBoxes
 
 
+	// --------------------------------------------------------------------------
 	render() {
 		return (
 			<div className='mem-game-container'>
@@ -369,12 +341,12 @@ class MemoryGame extends Component {
 						where they were to match them in pairs.</p>
 				</div>
 				<ColouredBoxes
-						boxArray={this.state.boxes}
-						boxHiddenState={this.state.boxHiddenState}
+						boxArray={this.props.boxes}
+						boxHiddenState={this.props.boxHiddenState}
 						handleBoxClick={this.handleBoxClick}
-						boxShowingCount={this.state.boxShowingCount}
+						boxShowingCount={this.props.boxShowingCount}
 					 />
-				<p className='counter'>Clicks counted: {this.state.clickCounter}</p>
+				<p className='counter'>Clicks counted: {this.props.clickCounter}</p>
 				<p className='new-game'>
 					<a href='/new-game' onClick={this.handleNewGameClick}>New Game</a>
 				</p>
@@ -383,14 +355,82 @@ class MemoryGame extends Component {
 		}
 	}
 
-export default MemoryGame;
+// export default MemoryGame;
 
 
-/*
-				<Header
-					handleNewGameClick={this.handleNewGameClick}
-					appName='Memory Game'
-					/>
-				...
-				<Footer />
-*/
+
+
+
+
+// ----------------------------------------------------------------------------
+const mapStateToProps = (reduxState, props) => {
+	// console.log(`MemoryGame mapStateToProps()`, reduxState, props);
+
+	return ( {...reduxState.memGame} );
+	};
+
+
+
+
+// ----------------------------------------------------------------------------
+const mapDispatchToProps = (dispatch, props) => {
+	// console.log("MemoryGame mapDispatchToProps()", dispatch, props);
+
+	return ({
+		setBoxesAll: (list) => (dispatch(
+				{
+				type: "setBoxesAll",
+				array: list
+				}
+			)), // end setBoxesAll
+		setBoxHiddenState: (list) => (dispatch(
+				{
+				type: "setBoxHiddenState",
+				array: list
+				}
+			)), // end setBoxHiddenState
+		setBoxShowingState: (list) => (dispatch(
+				{
+				type: "setBoxSolvedState",
+				array: list
+				}
+			)), // end setBoxShowingState
+		setBoxShowingCount: (newCount) => (dispatch(
+				{
+				type: "setBoxShowingCount",
+				newCount: newCount
+				}
+			)), // end setBoxShowingCount
+		setClickCount: () => (dispatch(
+				{
+				type: "setClickCount+1"
+				}
+			)), // end setClickCount
+		resetShowingBoxes: () => (dispatch(
+				{
+				type: "resetShowingBoxes"
+				}
+			)), // end resetShowingBoxes
+		toggleClick: (newState) => (dispatch(
+				{
+				type: "toggleClick",
+				newState: newState
+				}
+			)), // end toggleClick
+		newMemGame: () => (dispatch(
+				{
+				type: "newMemGame"
+				}
+			)), // end setBoxesAll
+		}) // end return
+	}; // end mapDispatchToProps
+
+
+
+
+
+// ----------------------------------------------------------------------------
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+	)(MemoryGame);

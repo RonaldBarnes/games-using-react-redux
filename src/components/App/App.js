@@ -76,7 +76,9 @@ class App extends Component {
 						</Route>
 */}
 							<Route path='/' element={<About />} />
-							<Route path='/memory-game' element={<MemoryGame	/>} />
+							<Route
+								path='/memory-game'
+								element={<MemoryGame store={globalStore} />} />
 							<Route
 								path='/flag-game'
 								element={<CountryFlagGame store={globalStore} />} />

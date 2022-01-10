@@ -22,8 +22,8 @@ globalStore.dispatch({type: 'increment'});
 ReactDOM.render(
 	<>
 	<Provider store={globalStore}>
-		<Test x='y' />
 	  <App x='y' />
+		// <Test x='y' />
 	</Provider>
 	</>
 	,

@@ -12,7 +12,7 @@ import {createStore} from 'redux';
 const initialState = {
 	/*
 	-----------------------------------------------------------------------------
-	FlagGame
+	flagGame
 	-----------------------------------------------------------------------------
 	*/
 	flagGame:
@@ -47,13 +47,27 @@ const initialState = {
 			"...fetching country data from server...",
 			"...sit tight a moment..."
 			],
-
-		// remaining items unused (?), remove them:
-/*
-		countryList: [],
-		correctGuess: 0,
-*/
 		}, // end FlagGame
+
+	/*
+	-----------------------------------------------------------------------------
+	memGame
+	-----------------------------------------------------------------------------
+	*/
+	memGame: {
+		// 8 choices, doubled makes 16 boxes:
+		colorChoices: ['aqua', 'orange', 'chartreuse', 'crimson',
+			'seagreen', 'indigo', 'darkgoldenrod', 'cornflowerblue'],
+		boxHiddenState: [],
+		boxSolvedState: [],
+
+		boxShowingCount: 0,
+		boxes: [],
+
+		clickCounter: 0,
+		allowClick: true,
+
+		}, // end memGame
 
 	counter: 0,
 	boo: "initialized"
@@ -63,13 +77,6 @@ const initialState = {
 
 
 
-const initialStateMemGame = {
-	memGame: {
-		solved: false,
-		boxes: [],
-		hiddenState: []
-		}
-	}
 
 
 
@@ -89,6 +96,7 @@ function rootReducer(state = initialState, action, ...arr){
 	const newState = {...state};
 
 	switch (action.type) {
+		// FlagGame ---------------------------------------------------------------
 		case "setCountriesAll":
 			newState.flagGame.countriesAll = [...action.list];
 			break;
@@ -120,6 +128,42 @@ function rootReducer(state = initialState, action, ...arr){
 			newState.flagGame.guessesWrong = [];
 
 			break;
+		// end FlagGame -----------------------------------------------------------
+
+
+		// memGame ----------------------------------------------------------------
+		case "setBoxesAll":
+			newState.memGame.boxes = [...action.array];
+			break;
+		case "setBoxHiddenState":
+			newState.memGame.boxHiddenState = [...action.array];
+			break;
+		case "setBoxSolvedState":
+			newState.memGame.boxSolvedState = [...action.array];
+			break;
+		case "setBoxShowingCount":
+			newState.memGame.boxShowingCount = action.newCount;
+			break;
+		case "setClickCount+1":
+			newState.memGame.clickCounter++;
+			break;
+		case "toggleClick":
+			newState.memGame.allowClick = action.newState;
+			break;
+		case "resetShowingBoxes":
+			let tmpHiddenState = newState.memGame.boxHiddenState.map( state => (
+				state === "Showing" ? "Hidden" : state
+				));
+			newState.memGame.boxHiddenState = [...tmpHiddenState];
+			break;
+		case "newMemGame":
+			newState.memGame.clickCounter = 0;
+			newState.memGame.allowClick = true;
+			newState.memGame.boxShowingCount = 0;
+			newState.memGame.boxHiddenState.fill("");
+			newState.memGame.boxSolvedState.fill("");
+			break;
+		// end memGame ------------------------------------------------------------
 
 
 
