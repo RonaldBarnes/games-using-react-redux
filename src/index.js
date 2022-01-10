@@ -23,7 +23,7 @@ ReactDOM.render(
 	<>
 	<Provider store={globalStore}>
 	  <App x='y' />
-		// <Test x='y' />
+		{/* <Test x='y' /> */}
 	</Provider>
 	</>
 	,
