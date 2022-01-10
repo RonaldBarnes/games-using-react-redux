@@ -1,4 +1,12 @@
 
+/*
+	On mobile Firefox, a solved puzzle, when scrolled to bottom,
+	shows the green country button above the header.
+	Cannot re-create on desktop Firefox in Responsive design mode though.
+*/
+header {
+	z-index: 10;
+	}
 
 nav {
 	display: flex;
