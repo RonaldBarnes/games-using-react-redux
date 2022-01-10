@@ -146,14 +146,18 @@ const About = () => (
 		<p>
 			Remaining tasks:
 		</p>
-		<ul className='about'><li>
-			Utililize Redux to centralize state further, allowing one to switch
-			games midway through, return to it and continue the game.
-		</li><li style={{textDecorationLine: 'line-through'}}>
-			Merge TodoList app into current framework
-		</li><li>
-			Perhaps re-factor, probably not - ought to complete the remaining
-			course material instead.
-		</li></ul>
+		<ul className='about'>
+			<li className="completed">
+				Utililize Redux to centralize state further, allowing one to switch
+				games midway through, return to it and continue the game.
+			</li>
+			<li className="completed">
+				Merge TodoList app into current framework
+			</li>
+			<li className="completed">
+				Perhaps re-factor, probably not - ought to complete the remaining
+				course material instead.
+			</li>
+		</ul>
   </div>
 	);

@@ -31,6 +31,9 @@ h1, h2 {
   padding: 20px;
 	box-sizing: border-box;
 }
+.about h2 {
+	font-size: 1.5rem;
+	}
 .about img {
 	box-shadow: none;
 	display: block;
