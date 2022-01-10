@@ -25,10 +25,9 @@ import logo from '../../logo.svg';
 	May decide to change it back to a discrete file again.
 	Had to import the Header.css file now, since it was the only functionality
 	provided by Header.js post-refactoring.
-
-import Header from '../../Header';
 */
-import '../../Header.css';
+import Header from '../../Header';
+// import '../../Header.css';
 import Footer from '../../Footer';
 
 import './App.css';
@@ -51,19 +50,38 @@ class App extends Component {
 				<Link
 					to="/"
 					activeclassname="active">Home</Link>
-		const linkTodoApp = <Link to="/todo-list">Todo List</Link>
-		const linkTodoAPI = <Link to={window.location.hostname + `:8123/api/todos`}>Todo List API</Link>
+		const linkTodoApp =
+			<Link
+				to="/todo-list"
+				activeclassname="active">Todo List</Link>
+		const linkTodoAPI =
+			<Link
+				to={window.location.hostname + `:8123/api/todos`}
+				activeclassname="active">Todo API</Link>
+		const linkContactUs =
+			<Link to='mailto:ron@ronaldbarnes.ca?subject=ReactJS'>Contact</Link>
 
     return (
-			/* In lieu of <Header />, create it here: */
       <div className="App">
 					<BrowserRouter>
+
+						<Header
+							linkHome={linkHome}
+							linkMemGame={linkMemGame}
+							linkFlagGame={linkFlagGame}
+							linkTodoApp={linkTodoApp}
+							linkContactUs={linkContactUs}
+							/>
+
+						{/* In lieu of <Header />, create it here: */}
+{/*
 						<header><nav>
 							{linkHome}
 							{linkMemGame}
 							{linkFlagGame}
 							{linkTodoApp}
 						</nav></header>
+*/}
 					<Routes>
 {/* Sub aka nested routes:
 						<Route path='/' element={<Header

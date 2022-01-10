@@ -1,6 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import {BrowserRouter, Link, Outlet, Routes, Route} from 'react-router-dom';
+// import {BrowserRouter, Link, Outlet, Routes, Route} from 'react-router-dom';
 
 import './Header.css';
 
@@ -10,7 +10,22 @@ import './Header.css';
 // Converted to functional component:
 function Header(props) {
 	console.log(`props.linkMemGame:`, props.linkMemGame);
+	return (
+		<header>
+			<nav>
+				{props.linkHome}
+				{props.linkMemGame}
+				{props.linkFlagGame}
+				{props.linkTodoApp}
+				<a href='mailto:ron@ronaldbarnes.ca?subject=ReactJS'>Contact Us</a>
+				{/* props.linkContactUs */}
+			</nav>
+		</header>
+		);
+	}
 
+
+function oldHeader(props) {
 	return (
 <React.Fragment>
 		<header className="header">
@@ -46,4 +61,3 @@ function Header(props) {
 	} // end Header
 
 export default Header;
-

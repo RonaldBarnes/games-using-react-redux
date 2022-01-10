@@ -9,13 +9,15 @@ function Footer() {
 	return (
 		<footer className='footer'>
 			<div>
-				ReactJS & Express & Mongoose
+				ReactJS & Redux
 			</div>
 			<div>
 				On RaspberryPi
 			</div>
 			<div>
-				Ⓒ 2021 Ronald Barnes
+				Ⓒ 2021, 2022
+				<a href='mailto:ron@ronaldbarnes.ca?subject=ReactJS'>{' '}
+				Ronald Barnes</a>
 			</div>
 		</footer>
 		);
