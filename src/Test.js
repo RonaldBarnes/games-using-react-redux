@@ -52,46 +52,18 @@ function Test(props) {
 // const mapStateToProps = (reduxState, props) => {
 const mapStateToProps = (reduxState) => {
 	// console.log("mapStateToProps() reduxState:", reduxState);
+	// console.log("mapStateToProps() props:", props);
 
 	const defaultCounter = reduxState.counter || 0;
 
-	// WHY does returning an object directly fail, but assigning it to a const,
-	// then returning the const work fine?!?
-	const wtf =
-		{
-		counter: defaultCounter
-/*
-		,
-		abc: "xyz"
-*/
-		};
 	return ({ counter: defaultCounter })
-//	return wtf;
 	};
-/*
-	console.log("mapStateToProps() props:", props);
-
-
-	return
-		{counter: 0}
-//...reduxState, props};
-	};
-*/
 
 
 const mapDispatchToProps = (dispatch, props) => {
 	// console.log("mapDispatchToProps()", dispatch, props);
 
 	return {
-/*
-		handleClick: (val) => (
-			updateCounter()
-			)
-			,
-		handleClick2: () => (
-			console.log(`handleClick2()`)
-			),
-*/
 		increment: () => dispatch({type: 'increment'}),
 		decrement: () => dispatch({type: "decrement"}),
 		reset: () => dispatch({type: "reset"})
