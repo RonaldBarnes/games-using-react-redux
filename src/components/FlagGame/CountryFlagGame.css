@@ -6,11 +6,23 @@
 						Congo (Democratic Republic of the) (54),
 						Morocco (151),
 						Tuvalu (234)
-	Window width: 1428px
-	Window height: 1297.4px
+	*html element*
+		Window width: 1428px
+		Window height: 1297.4px
 
 	What caused a guess (1st guess) of Paraguay (correct) to make
 	Tuvalu wrap to second line?!?
+
+	Another one:
+	Country: Russian Federation
+	Choices:	Cook Islands (55)
+						Congo (Democratic Republic of the) (54)
+						Russian Federation (185)
+						Sweden (218)
+	*html element*
+		Window width: 1078px
+		Window height: 1481px
+
 
 	The only style change is ".correct" which changes colour to "green".
 */
