@@ -9,7 +9,7 @@ import './Header.css';
 // class Header extends Component {
 // Converted to functional component:
 function Header(props) {
-	console.log(`props.linkMemGame:`, props.linkMemGame);
+	// console.log(`props.linkMemGame:`, props.linkMemGame);
 	return (
 		<header>
 			<nav>
