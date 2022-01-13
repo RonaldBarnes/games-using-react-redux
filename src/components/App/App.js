@@ -19,6 +19,8 @@ import TodoApp from '../TodoList/TodoApp';
 
 import logo from '../../logo.svg';
 
+import FlagGame_init from '../FlagGame/FlagGame_init';
+
 /*
 	Stopped using the Header.js and embedded a few links inside the
 	BrowserRouter inside this file.
@@ -46,8 +48,24 @@ class App extends Component {
 				<Link
 					to="/flag-game" xxx='xxx'
 					activeclassname="active">Flag Game</Link>
-		const linkHome =
+		const linkFlagGameHardestFlag =
 				<Link
+					to="/flag-game/0/230/237/168"
+					activeclassname="active">Hardest Flag</Link>
+		const linkFlagGameBestGeometric =
+				<Link
+					to="/flag-game/230/237/168/3"
+					activeclassname="active">Best Geometric Flag</Link>
+		const linkFlagGameEasiest1 =
+				<Link
+					to="/flag-game/143/119/139/234"
+					activeclassname="active">Easiest Flag #1</Link>
+		const linkFlagGameEasiest2 =
+				<Link
+					to="/flag-game/160/119/139/234"
+					activeclassname="active">Easiest Flag #2</Link>
+		const linkHome =
+				<Link aaa="bbb"
 					to="/"
 					activeclassname="active">Home</Link>
 		const linkTodoApp =
@@ -93,21 +111,54 @@ class App extends Component {
 											/>}>
 						</Route>
 */}
-							<Route path='/' element={<About />} />
 							<Route
 								path='/memory-game'
 								element={<MemoryGame store={globalStore} />} />
 							<Route
-								path='/flag-game'
-								element={<CountryFlagGame store={globalStore} />} />
+								path="/flag-game/:cntry1"
+								element={<FlagGame_init store={globalStore} />} >
+								<Route
+									path=":cntry2"
+									element={<FlagGame_init />} >
+									<Route
+										path=":cntry3"
+										element={<FlagGame_init />} >
+										<Route
+											path=":cntry4"
+											element={<FlagGame_init />} >
+										</Route>
+									</Route>
+								</Route>
+							</Route>
+							<Route
+								path="/flag-game"
+								element={<CountryFlagGame store={globalStore} />} >
+								<Route
+									path="*"
+									element={<CountryFlagGame store={globalStore} />} >
+								</Route>
+								<Route
+									path=":flag"
+									element={<CountryFlagGame store={globalStore} />} >
+									<Route
+										path=":cntry1"
+										element={<CountryFlagGame store={globalStore} />} >
+									</Route>
+								</Route>
+							</Route>
 							<Route path='/todo-list' element={<TodoApp />} />
 {/*
-											linkTodoList={linkTodoList}
-
-							<Route path='/todo-list' element={<TodoList />} />
 							<Route path='api/todos' element={<Header />} />
 */}
-							<Route exact path='/' element={<About />} />
+							<Route
+								path='*'
+								element={<About
+									linkFlagGameHardestFlag = {linkFlagGameHardestFlag}
+									linkFlagGameBestGeometric = {linkFlagGameBestGeometric}
+									linkFlagGameEasiest1 = {linkFlagGameEasiest1}
+									linkFlagGameEasiest2 = {linkFlagGameEasiest2}
+									/>}
+								/>
 					</Routes>
 					</BrowserRouter>
 				<Footer />
@@ -118,7 +169,18 @@ class App extends Component {
 
 export default App;
 
-const About = () => (
+
+
+
+
+
+
+const About = (props) => {
+
+		console.log(`App.js About props:`, props);
+
+// render() {
+	return (
   <div className="about">
 		<h1>ReactJS Projects</h1>
     {/* <h2>Welcome to React</h2> */}
@@ -158,6 +220,48 @@ const About = () => (
 				Perhaps re-factor, probably not - ought to complete the remaining
 				course material instead.
 			</li>
+			<li className="completed">
+				Add params to Routes so games can be linked to in specific states.
+				Can foresee using it to play "Guess whose country <strong>this</strong>
+				{' '} flag represents??
+			</li>
+			<li>
+				Done! Now FlagGame is refactored for redux, nested routes (v6 style),
+				added a functional component because useParams() doesn't work in a
+				regular React component (nice hack!), and the ability to share a game
+				via URL where the components indicate the country choices!
+			</li>
+			<li className="completed">
+				Next, change routing from "test" to flag-game to enable routing in
+				game accessible via NavLink (header link).
+			</li>
+			<li className="completed">
+				Next (maybe) is to add check ensuring 4 URL parameters are provided,
+				else randomly select enough to make complete choices panel.
+				Although, it's kind of cool to pass one URL parameter and see one
+				choice.  "Hey, look at this flag!"
+			</li>
+				<ul>
+					<li>
+						Hardest flag to hand draw: {props.linkFlagGameHardestFlag}
+					</li>
+					<li>
+						Best geometric flag: {props.linkFlagGameBestGeometric}
+					</li>
+					<li>
+						Easiest (#1) to guess: {props.linkFlagGameEasiest1}
+					</li>
+					<li>
+						Easiest (#2) to guess: {props.linkFlagGameEasiest2}
+					</li>
+				</ul>
+			<li>
+				Console is showing error in FlagGame's mapDispatchToProps():
+				"Actions must be plain objects."
+				This does not happen in Firefox (test this again)
+			</li>
 		</ul>
   </div>
-	);
+	); // end return
+}
+

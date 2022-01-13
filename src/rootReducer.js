@@ -38,7 +38,7 @@ const initialState = {
 
 		// The correct answer as index to countries list:
 		idxAnswerCorrect: -1,
-		idxAnswerSubset: -1,
+		// idxAnswerSubset: -1,
 
 		formatNumber: new Intl.NumberFormat(),
 
@@ -80,15 +80,6 @@ const initialState = {
 
 
 
-/*
-// export default const globalStore = createStore( rootReducer,
-export const flagStore = createStore( flagReducer,
-	window.__REDUX_DEVTOOLS_EXTENSION__
-	&& window.__REDUX_DEVTOOLS_EXTENSION__()
-	);
-*/
-
-
 
 
 
@@ -100,13 +91,17 @@ function rootReducer(state = initialState, action, ...arr){
 		case "setCountriesAll":
 			newState.flagGame.countriesAll = [...action.list];
 			break;
-		case "setGuessesWrong":
+		case "appendGuessesWrong":
 			newState.flagGame.guessesWrong =
 				[...newState.flagGame.guessesWrong, action.guess]
 			break;
-		case "setGuessesCorrect":
+		case "appendGuessesCorrect":
 			newState.flagGame.guessesCorrect =
 				[...newState.flagGame.guessesCorrect, action.guess]
+			break;
+		case "resetGuesses":
+			newState.flagGame.guessesCorrect = [];
+			newState.flagGame.guessesWrong = [];
 			break;
 		case "setRandCountries":
 			newState.flagGame.randCountries =
@@ -114,7 +109,7 @@ function rootReducer(state = initialState, action, ...arr){
 			break;
 		case "setAnswerIndeces":
 			newState.flagGame.idxAnswerCorrect = action.indeces.indexMasterList;
-			newState.flagGame.idxAnswerSubset = action.indeces.indexSubset;
+			// newState.flagGame.idxAnswerSubset = action.indeces.indexSubset;
 			break;
 		case "setSolved":
 			newState.flagGame.solved = action.newState;
@@ -122,7 +117,7 @@ function rootReducer(state = initialState, action, ...arr){
 		case "newFlagGame":
 			newState.flagGame.solved = false;
 			newState.flagGame.idxAnswerCorrect = -1;
-			newState.flagGame.idxAnswerSubset = -1;
+			// newState.flagGame.idxAnswerSubset = -1;
 			newState.flagGame.randCountries = [];
 			newState.flagGame.guessesCorrect = [];
 			newState.flagGame.guessesWrong = [];

@@ -11,7 +11,7 @@ class CountryList extends Component {
 		countriesAll: PropTypes.array.isRequired,
 		randCountries: PropTypes.array.isRequired,
 		idxAnswerCorrect: PropTypes.number.isRequired,
-		idxAnswerSubset: PropTypes.number.isRequired,
+		// idxAnswerSubset: PropTypes.number.isRequired,
 		solved: PropTypes.bool.isRequired,
 		guessesCorrect: PropTypes.array.isRequired,
 		guessesWrong: PropTypes.array.isRequired,
@@ -24,26 +24,8 @@ class CountryList extends Component {
 	constructor(props) {
 		super(props);
 		console.log(`CountryList constructor() props:`, props);
-/*
-		const countryList = this.props.countryList;
-		const answerIdx = this.props.answerIdx;
-*/
 		}
 
-
-/*
-	Replaced this function with rootReducer.
-	Was originally in a bound prop from the HOC but failed to reload those
-	props if a game was solved, then clicked on MemoryGame, then back.
-	// --------------------------------------------------------------------------
-	// Declared fmtNumber as new Intl.NumberFormat in componentDidMount
-	formatNumber( num ) {
-		console.log(`CountryList() formatNumber: num=${num}`);
-
-		let x = new Intl.NumberFormat()
-		return x.format(num);
-		}
-*/
 
 
 
@@ -51,12 +33,11 @@ class CountryList extends Component {
 	// ---------------------------------------------------------
 	render() {
 		let {
+			countriesAll,
 			randCountries,
-			// deprecated: countryList,
 			guessesCorrect,
 			guessesWrong,
 			idxAnswerCorrect,
-			idxAnswerSubset,
 			solved,
 			handleCountryClick,
 			formatNumber
@@ -81,11 +62,11 @@ class CountryList extends Component {
 			// Update country button's colour if correct button selected
 			// set class 'correct' on correct country if it's been chosen:
 			if ( guessesCorrect.includes(
-					randCountries[idx].idxMasterList) ) {
+					randCountries[idx].id) ) {
 				classes += ' correct';
 				} // end if this matches correct guess
 			// set class 'wrong' on wrong choices:
-			else if ( guessesWrong.includes( randCountries[idx].idxMasterList) ) {
+			else if ( guessesWrong.includes( randCountries[idx].id) ) {
 				classes += ' wrong';
 				} // else if this matches wrong guess
 
@@ -95,18 +76,19 @@ class CountryList extends Component {
 			if (this.props.solved) {
 				onclickAction = () => (
 					console.log('STOP GUESSING, the correct answer is '
-						+ `"${randCountries[idxAnswerSubset].name}".`));
+						+ `"${countriesAll[idxAnswerCorrect].name}".`));
 				}
 
 			return <div className={classes}
-				key={value.idxMasterList}
-				id={value.idxMasterList}
+				key={value.id}
+				id={value.id}
 				title={value.name}
 				onClick={onclickAction}
 				>{value.name}
 			</div>
 			}); // end map
-		let imgSrc = randCountries[idxAnswerSubset].flag ;
+
+		let imgSrc = countriesAll[idxAnswerCorrect].flag ;
 
 
 
@@ -117,6 +99,8 @@ class CountryList extends Component {
 		let solvedDiv = <div className='new-game' style={{opacity: 0}}></div>;
 
 		if ( this.props.solved ) {
+			// Some tricky stuff (spaces not honoured, requiring {' '}, text chunked
+			// in weird ways in DOM), hence ugly formatting:
 			solvedDiv =
 				<div className='new-game'>
 					<div>
@@ -125,24 +109,38 @@ class CountryList extends Component {
 						>Next Puzzle</a>
 					</div>
 				<div className='more-info'>
-More info about {randCountries[idxAnswerSubset].name}
-					<ul><li>
-Region: {randCountries[idxAnswerSubset].region}
-						</li><li>
-Sub-Region: {randCountries[idxAnswerSubset].subregion}
-						</li><li>
-Capital city: {randCountries[idxAnswerSubset].capital}
-						</li><li>
-Native name: {randCountries[idxAnswerSubset].nativeName}
-						</li><li>
-Population: {formatNumber.format(randCountries[idxAnswerSubset].population)}
-						</li><li>
-<span style={{fontWeight: 'bold'}}>Language
-{randCountries[idxAnswerSubset].languages.length > 1 ? 's' : ''}
-:</span> <ol style={{width: 'fit-content', marginInline: 'auto'}}>{randCountries[
-	idxAnswerSubset].languages.map( (lang,idx) => (
-	<li key={idx} style={{listStyle: 'decimal'}}>{lang.name} ({lang.nativeName})</li>
-	))}</ol>
+					More info about {countriesAll[idxAnswerCorrect].name}
+					<ul>
+						<li>
+							Region: {countriesAll[idxAnswerCorrect].region}
+						</li>
+						<li>
+							Sub-Region: {countriesAll[idxAnswerCorrect].subregion}
+						</li>
+						<li>
+							Capital city: {countriesAll[idxAnswerCorrect].capital}
+						</li>
+						<li>
+							Native name: {countriesAll[idxAnswerCorrect].nativeName}
+						</li>
+						<li>
+							Population: {
+								formatNumber.format(countriesAll[idxAnswerCorrect].population)
+								}
+						</li>
+						<li>
+							<span style={{fontWeight: 'bold'}}>Language
+								{countriesAll[idxAnswerCorrect].languages.length > 1 ? 's' : ''}
+							:</span>
+							<ol style={{width: 'fit-content', marginInline: 'auto'}}>
+								{countriesAll[idxAnswerCorrect].languages.map( (lang,idx) => (
+									<li
+										key={idx}
+										style={{listStyle: 'decimal'}}>
+										{lang.name} ({lang.nativeName})
+									</li>
+									))}
+							</ol>
  						</li>
 					</ul>
 				</div>
@@ -159,7 +157,7 @@ Population: {formatNumber.format(randCountries[idxAnswerSubset].population)}
 				</div>
 				{solvedDiv}
 			</React.Fragment>
-			)
+			); // end return
 		} // end render
 	} // end class
 

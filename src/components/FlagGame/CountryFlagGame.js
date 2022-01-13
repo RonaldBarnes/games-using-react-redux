@@ -1,6 +1,7 @@
 
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 // import PropTypes from 'prop-types';
 
@@ -24,6 +25,7 @@ const NUM_CHOICES = 4;
 
 // ----------------------------------------------------------------------------
 class CountryFlagGame extends Component {
+// const CountryFlagGame = (props) => {
 
 	constructor(props) {
 		super(props);
@@ -41,6 +43,8 @@ class CountryFlagGame extends Component {
 		this.handleNewGameClick = this.handleNewGameClick.bind(this);
 
 		// this.formatNumber = this.formatNumber.bind(this);
+
+//		this.myParams();
 		} // end constructor()
 
 
@@ -48,6 +52,10 @@ class CountryFlagGame extends Component {
 
 
 
+
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------
 	handleNewGameClick(e) {
 		e.preventDefault();
@@ -78,14 +86,14 @@ class CountryFlagGame extends Component {
 		if ( this.props.idxAnswerCorrect === Number(e.target.id) ) {
 			console.log(`CORRECT!`);
 
-			this.props.setGuessesCorrect( Number(e.target.id));
+			this.props.appendGuessesCorrect( Number(e.target.id));
 			this.props.setSolved(true);
 			return true;
 			}
 
 		console.log(`WRONG answer`);
 
-		this.props.setGuessesWrong( Number(e.target.id));
+		this.props.appendGuessesWrong( Number(e.target.id));
 		return false;
 		} // end handleCountryClick()
 
@@ -100,24 +108,26 @@ class CountryFlagGame extends Component {
 		// Set title (does React.Route or .Link handle this? NO)
 		document.title = 'Flag Game';
 
-/*
-		// Prepare to format large numbers (i.e. 1000 -> 1,000)
-		// Used when correct answer displays further info i.e. population
 		// Placed here instead of constructor so it only runs once
 		this.fmtNumber = new Intl.NumberFormat();
-*/
+
+
+		// Timing issues so put selectRandCountries in a .then inside
+		// async fetchCountriesAllData
 		if (this.props.countriesAll.length === 0) {
 			this.fetchCountriesAllData();
 			}
 
-		// Timing issues so put selectRandCountries in a .then inside
-		// async fetchCountriesAllData
-		if (this.props.countriesAll.length > 0 &&
-				this.props.randCountries.length === 0) {
-console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
-			this.selectRandCountries();
-			}
-	} // end componentDidMount
+		if (this.props.countriesAll.length > 0) {
+			// If URL params have been passed, load the user-selected countries:
+			if (this.props.userCountries !== undefined) {
+				this.selectUserCountries();
+				}
+			else if (this.props.randCountries.length === 0) {
+				this.selectRandCountries();
+				} // end else
+			} // end if countriesAll.length === 0
+		} // end componentDidMount
 
 
 
@@ -148,6 +158,10 @@ console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
 // TEST DUPLICATION POTENTIAL IN OTHER CODE: TAKE ONLY A SLICE:
 // This will get us Nepa (156), a VERTICAL flag, for testing layout:
 //				this.setState( {countriesAll: countriesAll.splice(150, 10) })
+				let countriesAllWithId = countriesAll.map( (country, idx) => {
+					country.id = idx;
+					return country;
+					})
 				this.props.setCountriesAll( countriesAll );
 					// , () => console.log( this.state.countries) )
 				})
@@ -155,7 +169,14 @@ console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
 				// Do not like this here, should be in componentDidMount, but...
 				// problems with timing issues.  async to the rescue?
 				// This is required here, otherwise stuck on loading screen
-				this.selectRandCountries();
+				if (this.props.userCountries !== undefined) {
+					// Load countries chosen by user via URL params:
+					this.selectUserCountries();
+					}
+				else
+					{
+					this.selectRandCountries();
+					}
 				})
 			.catch( error => {
 				console.log(`ERROR in fetch(4): ${error.message}`);
@@ -166,6 +187,76 @@ console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
 				}) // end catch
 
 		} // end fetchCountriesAllData
+
+
+
+
+	// --------------------------------------------------------------------------
+	// User selected countries via URL params: use those countries:
+	selectUserCountries() {
+
+		let {
+				countriesAll,
+				userCountries,
+				idxAnswerCorrect,
+				setRandCountries,
+				setAnswerIndeces,
+				resetGuesses,
+				setSolved,
+				} = this.props;
+
+
+
+		let tmpCountries = [];
+
+		for (let i = 0; i < userCountries.length; i++) {
+			tmpCountries[i] = countriesAll[ userCountries[i]];
+			tmpCountries[i].idxMasterList = Number(userCountries[i]);
+			}
+
+		// Correct answer index is first URL param: save that to redux store:
+		idxAnswerCorrect = userCountries[0];
+
+		// Ensure there are FOUR countries, else randomly top-up to 4
+		while (tmpCountries.length < 4) {
+			// Get one random country:
+			let randCountry = this.randomArraySlice( [...countriesAll], 1);
+			// Check (inverse) intersection to ensure it does NOT exist in choices:
+			if ( tmpCountries.filter( (country) => (
+					!tmpCountries.includes( randCountry)	// ? false : true
+					)) // end filter
+				) {
+				// Add new country to choices array:
+				tmpCountries = tmpCountries.concat(randCountry);
+				}
+			}
+
+
+		// Scramble tmpCountries so correct answer is not always first choice
+		// First URL param is always correct country...
+		let randomized = new Set();
+		while (randomized.size < NUM_CHOICES) {
+			randomized.add( tmpCountries[ Math.floor(Math.random() * NUM_CHOICES)])
+			}
+		tmpCountries = Array.from(randomized);
+
+
+
+		setRandCountries( [...tmpCountries]);
+
+		setAnswerIndeces({
+			indexMasterList: Number(idxAnswerCorrect),
+			indexSubset: Number(idxAnswerCorrect)
+			})
+
+		// Cleanup guesses from last game/puzzle:
+		resetGuesses();
+		setSolved(false);
+
+		console.log(`selectUserCountries(): tmpCountries:`, tmpCountries);
+
+		} // end selectUserCountries
+
 
 
 
@@ -183,7 +274,7 @@ console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
 			Math.floor( Math.random() * randCountries.length);
 
 		// Save index of correct country inside subset that user chooses from:
-		this.idxAnswerSubset = randCountry;
+		// this.idxAnswerSubset = randCountry;
 
 
 
@@ -194,6 +285,8 @@ console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
 			indexMasterList: randCountries[randCountry].idxMasterList,
 			indexSubset: randCountry
 			})
+		this.props.setSolved(false);
+		this.props.resetGuesses();
 		} // end selectRandCountries
 
 
@@ -250,57 +343,15 @@ console.log("DOES the next selectRandCountries() EVER run from here?  NO!");
 
 
 
-
-
-
-
 	// --------------------------------------------------------------------------
 	render() {
 		// console.log(`render() ...`);
 
-		// Randomly selected index to 'correct' country:
-		// let randCountry = 0;
 
-		// Get 4 random countries IF countriesAll is loaded:
-		// AND if a correct answer hasn't been chosen yet
-//		if (this.state.countriesAll.length > 0
-/*
-		if (this.props.countriesAll.length > 0
-//			&& this.randCountries.length === 0
-			&& this.props.randCountries.length === 0
-			&& this.idxAnswerCorrect === -1
-			&& this.state.solved === false
-			) {
-			this.randCountries =
-				this.randomArraySlice( [...this.state.countriesAll], NUM_CHOICES);
-			this.props.setRandCountries( [...this.randCountries]);
-//			this.props.setRandCountries(
-//				this.randomArraySlice( [...this.props.countriesAll], NUM_CHOICES)
-//				);
 
-			// Select a random "correct" country from the 4 countries
-			randCountry =
-				Math.floor( Math.random() * this.props.randCountries.length);
-//				Math.floor( Math.random() * this.randCountries.length);
-console.log(`render(): randCountry = ${randCountry}`);
-			// Set an index of correct country to master countries list
-//			this.idxAnswerCorrect = this.randCountries[randCountry].idxMasterList ;
-			this.idxAnswerCorrect =
-				this.props.randCountries[randCountry].idxMasterList ;
 
-			// Save index of correct country inside subset that user chooses from:
-			this.idxAnswerSubset = randCountry;
-
-			this.props.setAnswerIndeces({
-				indexMasterList: this.randCountries[randCountry].idxMasterList,
-				indexSubset: randCountry
-				})
-
-			} // end if
-*/
-
-// Test error handling:
-// this.randomArraySlice([], 2);
+		// Test error handling by asking for more elements than exist in array:
+		// this.randomArraySlice([], 2);
 
 
 
@@ -310,7 +361,8 @@ console.log(`render(): randCountry = ${randCountry}`);
 		// this.state. messages:
 //		if (this.randCountries.length === 0) {
 		if (this.props.randCountries.length === 0
-				|| this.props.idxAnswerSubset === -1) {
+				|| this.props.idxAnswerCorrect === -1
+			) {
 			outMsg = <ul>
 			{[...this.props.messages.map( (msg,idx) => (
 				<li key={idx}>{msg}</li>
@@ -325,7 +377,7 @@ console.log(`render(): randCountry = ${randCountry}`);
 					countriesAll = {this.props.countriesAll}
 					randCountries = {this.props.randCountries}
 					idxAnswerCorrect = {this.props.idxAnswerCorrect}
-					idxAnswerSubset = {this.props.idxAnswerSubset}
+					// idxAnswerSubset = {this.props.idxAnswerSubset}
 					solved = {this.props.solved}
 					guessesCorrect = {this.props.guessesCorrect}
 					guessesWrong = {this.props.guessesWrong}
@@ -378,18 +430,23 @@ const mapDispatchToProps = (dispatch, props) => {
 				list: list
 				}
 			)), // end setCountriesAll
-		setGuessesWrong: (country) => (dispatch(
+		appendGuessesWrong: (country) => (dispatch(
 				{
-				type: "setGuessesWrong",
+				type: "appendGuessesWrong",
 				guess: country
 				}
-			)), // end setGuessesWrong
-		setGuessesCorrect: (country) => (dispatch(
+			)), // end appendGuessesWrong
+		appendGuessesCorrect: (country) => (dispatch(
 				{
-				type: "setGuessesCorrect",
+				type: "appendGuessesCorrect",
 				guess: country
 				}
-			)), // end setGuessesCorrect
+			)), // end appendGuessesCorrect
+		resetGuesses: () => (dispatch(
+				{
+				type: "resetGuesses"
+				}
+			)),
 		setRandCountries: (countries) => (dispatch(
 				{
 				type: "setRandCountries",
