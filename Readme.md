@@ -57,3 +57,5 @@ Implement CSS grid on Memory Game.
 
 Remove Todo List API project link from header.
 
+
+![MemoryGame-screenshot](https://user-images.githubusercontent.com/36019446/169620995-77c709ea-6179-4b0d-8573-58d8cf876673.png)
