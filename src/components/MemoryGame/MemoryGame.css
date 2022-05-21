@@ -1,65 +1,40 @@
-/*
-body {
-	margin: 0 5px 0 5px;
-	box-sizing: border-box;
-	height: 100vh;
-	}
-*/
+
 .mem-game-container {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 2rem;
-/*
-	height: 100%;
-*/
 	}
 
 .instructions {
 	font-size: 1.5em;
-/*
-	margin-left: 1em;
-*/
 	}
 
 .boxesContainer {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
 	justify-content: center;
-	column-gap: 2vw;
-	row-gap: 2vh;
-/*
-	Leave "un-grown" so it doesn't spread out too much:
-	flex-grow: 5;
-
-	Causes weird spacing when wrapping; better to leave disabled so that
-	all boxes align vertically or horizontally, without uneven gaps
-	justify-content: space-evenly;
-*/
+	column-gap: 0.5rem;
+	row-gap: 0.5rem;
 	align-items: center;
 	margin-left: 1rem;
 	margin-right: 1rem;
-	/* Allow container re-size to adjust rows & columns to easier layout */
-	resize: both;
-	/* Can't find the resizing handle?!? */
-	/* outline: 1px solid red; */
-	border-radius: 10px;
+	/* Allow container re-size to adjust rows & columns to easier layout
+	 * Doesn't work, switched to display: grid;
+	 */
+	/*	resize: both;	*/
 	}
 
 .box {
-/*
-	width: clamp(15vw, 150px, 25vw);
-	height: clamp(15vw, 150px, 25vw);
-*/
-	width: 150px;
-	height: 150px;
-
-	/* cornflowerblue & darkgoldenrod are lovely colours, but too wide for the box */
-/*
+	justify-self: center;
+	width: 100%;
+/*	width: clamp(10vw, 150px, 33vw);	*/
+	height: clamp(10vw, 150px, 33vw);
+	/* cornflowerblue & darkgoldenrod are lovely colours,
+	 * but too wide for the box:
 	overflow: clip;
-*/
+	 */
 	box-sizing: border-box;
-	border-radius: 5px;
+	border-radius: 20px;
 	box-shadow: 5px 5px 5px inset silver, -5px -5px 5px inset slateblue;
 	cursor: pointer;
 	}
@@ -118,40 +93,29 @@ Responsive design
 ------------------------------------------------------------------------------
 */
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1400px) {
 
-	.boxContainer {
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: space-around;
+	.boxesContainer {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
 		align-items: center;
 		box-sizing: border-box;
-		row-gap: 5px;
-		column-gap: 2px;
-		flex-grow: 50;
-/*
-		overflow: scroll;
-		outline: 1px solid blue;
-*/
-		margin: 1em;
 		padding: 0.5em;
-		columns: 2;
-/*
-		width: 90vw;
-		height: 75vh;
-*/
 		}
+
 	.box {
+		justify-self: center;
 		text-align: center;
 		font-size: .5rem;
-
-		flex-grow: 0;
-		flex-shrink: 0;
-		border-radius: 5px;
+		border-radius: 25px;
 		padding:5px;
 		margin: 0 5px 0 5px;
 
-		width: clamp(15vw, 100px, 33vw);
+		width: 100%;
+/*
+		height: 100%;
+		width: clamp(20vw, 100px, 33vw);
+*/
 		height: clamp(15vw, 100px, 33vw);
 		}
 	.box > p + p {
