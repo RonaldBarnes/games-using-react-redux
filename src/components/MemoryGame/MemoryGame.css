@@ -74,6 +74,8 @@
 p.counter, p.new-game {
 	margin-bottom: 0;
 	font-size: 2rem;
+	/* Chrome p gets default value of 1rem */
+	margin-block-start: 0.5rem;
 	}
 a {
 	text-decoration-line: none;
