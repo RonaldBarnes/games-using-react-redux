@@ -37,6 +37,17 @@ country choices so I can link to specific flags and specific country choices.
 See the main index page for "Hardest Flag to Hand Draw",
 or "Best Geometric Flag", etc.
 
+**NOTE**
+
+Slovakia's flag has an issue, it is missing height and width attributes,
+and fails to display inside the game:
+
+http://ronaldbarnes.ca:3000/flag-game/204
+
+It **can** be viewed by loading directly into browser:
+
+https://flagcdn.com/sk.svg
+
 
 
 #### Redux
