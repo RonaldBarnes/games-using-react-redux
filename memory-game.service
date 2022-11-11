@@ -1,0 +1,18 @@
+[Unit]
+Description=Memory Game in React.js
+
+
+After=network.target
+
+[Service]
+## Type=simple
+
+
+ExecStart=nodemon
+WorkingDirectory=/home/uid1/Projects/udemy/nodejs/react/games-redux
+
+## Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
